@@ -114,18 +114,5 @@
           "4,13"
         ]
       ]
-    },
-    "customKeycodes": [
-      { "name": "CUT_AUTO", "title": "switch mode", "shortName": "U-O-W" },
-      { "name": "CUT_24G", "title": "switch 2.4g mode", "shortName": "M_24G" },
-      { "name": "SW_BLE_1", "title": "switch ble-1", "shortName": "BLE_1" },
-      { "name": "SW_BLE_2", "title": "switch ble-2", "shortName": "BLE_2" },
-      { "name": "SW_BLE_3", "title": "switch ble-3", "shortName": "BLE_3" },
-      { "name": "RESET_KB", "title": "reset keyboard", "shortName": "RST_KB" },
-      { "name": "KB_OFF", "title": "turn off keyboard", "shortName": "KB_OFF" },
-      { "name": "KB_SLEEP", "title": "turn sleep keyboard", "shortName": "KB_SLP" },
-      { "name": "KB_DFU", "title": "update keyboard firmware", "shortName": "KB_DFU" },
-      { "name": "PRT_BAT", "title": "print battery status", "shortName": "PRT_BAT" },
-      { "name": "REVICE_24G_DFU", "title": "recevice 2.4g dfu mode", "shortName": "KC_DFU" }
-    ]
+    }
   }
