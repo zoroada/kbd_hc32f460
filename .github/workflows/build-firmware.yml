@@ -1,0 +1,81 @@
+name: Build HC32F460 firmware
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      keyboard:
+        description: 'Keyboard folder under keyboard/'
+        required: true
+        default: zero64
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firmware-${{ github.workflow }}-${{ github.ref }}-${{ inputs.keyboard || 'zero64' }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Select keyboard
+        id: target
+        env:
+          KEYBOARD: ${{ inputs.keyboard || 'zero64' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$KEYBOARD" =~ ^[A-Za-z0-9][A-Za-z0-9_-]{0,47}$ ]]; then
+            echo 'Invalid keyboard folder name' >&2
+            exit 1
+          fi
+          test -f "keyboard/$KEYBOARD/Makefile"
+          printf 'keyboard=%s\n' "$KEYBOARD" >> "$GITHUB_OUTPUT"
+
+      - name: Install Arm GNU Toolchain 14.2.Rel1
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive='arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi.tar.xz'
+          toolchain="$RUNNER_TEMP/hc32-gcc"
+          curl --fail --location --retry 3 \
+            "https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/$archive" \
+            --output "$RUNNER_TEMP/$archive"
+          printf '62a63b981fe391a9cbad7ef51b17e49aeaa3e7b0d029b36ca1e9c3b2a9b78823  %s\n' \
+            "$RUNNER_TEMP/$archive" | sha256sum --check
+          mkdir -p "$toolchain"
+          tar -xJf "$RUNNER_TEMP/$archive" -C "$toolchain" --strip-components=1
+          printf '%s/bin\n' "$toolchain" >> "$GITHUB_PATH"
+
+      - name: Build firmware
+        env:
+          KEYBOARD: ${{ steps.target.outputs.keyboard }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          arm-none-eabi-gcc --version
+          python3 --version
+          make -C "keyboard/$KEYBOARD" all TARGET="$KEYBOARD" PREFIX=arm-none-eabi- -j2
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: hc32f460-${{ steps.target.outputs.keyboard }}-${{ github.run_number }}
+          path: |
+            build/**/*.bin
+            build/**/*.hex
+            build/**/*.uf2
+          if-no-files-found: error
+          retention-days: 14

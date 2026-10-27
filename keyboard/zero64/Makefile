@@ -20,7 +20,7 @@ QMK_CORE := $(ROOT_DIR)/quantum
 #使用HC32F460xE型号
 DEVICE = HC32F460xE
 
-CURRENT_DIR := $(shell PWD)
+CURRENT_DIR := $(CURDIR)
 # 使用basename命令提取文件夹名称  
 CURRENT_DIR_NAME := $(notdir $(CURRENT_DIR)) 
 TARGET           := $(strip $(CURRENT_DIR_NAME))
