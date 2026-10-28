@@ -265,3 +265,17 @@ pyocd load -t hc32f460xe --base-address 0x0 build/zero64-YYYYMM.bin
 - Tap Dance 索引 4 读取失败：`drivers/eeprom.h` 中必须先定义 `TOTAL_EEPROM_BYTE_COUNT`，再包含 `vial.h`，避免模块之间的条目数量不一致；工程已修复该顺序。
 - `_write/_read/_close`、RWX 段或 Python 转义提示：构建可能有这些警告，须以 Make 退出状态和实际生成文件判断是否成功。
 - 无 boot 仍显示旧 U 盘：确认两处启动地址都已改动、已 clean 重编，并实际烧录了新的 HEX，而非只生成文件。
+
+## 9. 开源许可证
+
+本项目基于 [Vial/QMK](https://github.com/vial-kb/vial-qmk)。与本工程 Vial 核心的声明一致，
+基于它们的固件和项目修改按 **GPL-2.0-or-later**（GNU GPL 第 2 版或任何后续版本）提供。
+GPL 第 2 版完整文本见 [LICENSE](LICENSE)。各文件的具体版权和许可声明应予保留。
+
+允许使用、修改和商业销售；分发本项目的固件或基于它的产品时，应遵守 GPL 的要求，
+包括向接收者提供相应的完整源码和构建所需文件，并保留版权与许可证声明。
+
+第三方组件继续适用其原有许可证，例如 FreeRTOS 的 MIT 和 HC32 驱动的 BSD-3-Clause。
+本项目声明不替换或重新授权这些第三方代码。原根目录的 LGPL-2.1 文本已保留在
+[LICENSES/LGPL-2.1.txt](LICENSES/LGPL-2.1.txt)，供适用该许可的第三方代码使用。
+独立的 `HC32F460_BOOT` 工程不因本说明自动变更许可证。
